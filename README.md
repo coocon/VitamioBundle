@@ -1,5 +1,13 @@
 Vitamio
 ===============
+通过51cache的SDK， 调用静态方法，来获取新的资源URL，新的URL通过IP访问CDN上的资源，从而因为运营商劫持造成的“慢、卡、不能播放”的问题。
+
+1、修改了 demo里边的 VideoView 示例，添加了两个按钮：“Open Video1”和“Open Video2”
+2、点击“Open Video1”，用直接给播放器set 原URL
+3、点击“Open Video2”，用SDK提供的方法处理原URL， 产生新的URL，set 给播放器。
+
+
+
 
 Vitamio is an open multimedia framework for Android and iOS, with full and real hardware accelerated decoder and renderer.
 
