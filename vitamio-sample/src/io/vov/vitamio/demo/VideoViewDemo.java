@@ -20,6 +20,7 @@ package io.vov.vitamio.demo;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Message;
 import android.view.View;
 import android.widget.Toast;
 
@@ -42,8 +43,17 @@ public class VideoViewDemo extends Activity {
 
 	private VideoView mVideoView;
 
-	private Handler handler= null;  
 	private String finalUrl = null;
+	private static final int AZIMUTHCHANGE = 0xff04;
+	
+	private Handler m_handler = new Handler()
+	{
+		public void handleMessage(android.os.Message msg) {
+			String url = (String) msg.obj;
+			mVideoView.setVideoPath(url);
+			
+		};
+	};
 	
 	@Override
 	public void onCreate(Bundle icicle) {
@@ -55,7 +65,6 @@ public class VideoViewDemo extends Activity {
 		setContentView(R.layout.videoview);
 		mVideoView = (VideoView) findViewById(R.id.surface_view);
 		 //创建属于主线程的handler  
-        handler=new Handler();  
 		if (path == "") {
 			// Tell the user to provide a media file URL/path.
 			Toast.makeText(VideoViewDemo.this, "Please edit VideoViewDemo Activity, and set path" + " variable to your media file URL/path", Toast.LENGTH_LONG).show();
@@ -87,16 +96,8 @@ public class VideoViewDemo extends Activity {
 	    mVideoView.setVideoPath(path);
 	};
 	
-	   // 构建Runnable对象，在runnable中更新界面  
-    Runnable  runnableUi=new  Runnable(){  
-        @Override  
-        public void run() { 
-            //更新界面  
-			mVideoView.setVideoPath(finalUrl);
-
-        }  
-          
-    };  
+	
+   
 	/**
 	 * 采用sdk提供的方法 替换url
 	 * @param view
@@ -112,8 +113,10 @@ public class VideoViewDemo extends Activity {
 			 public void run() {
 				 
 				String[] url = DNS.getCDNUrls(path2);
-				finalUrl = url[0];
-				handler.post(runnableUi);   
+				Message msg = new Message();
+		        msg.obj = url[0];
+
+		        m_handler.sendMessage(msg); 				
                				 
 			 }
 		}).start();	
