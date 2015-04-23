@@ -39,7 +39,7 @@ public class VideoViewDemo extends Activity {
 	 * path.
 	 */
 	private String path = "http://aliv.weipai.cn/201503/28/16/42481BC8-46B1-46E8-A7C8-5B263AF0DF53.m3u8";
-	private String path2 = path;
+	private String path2 = "http://aliv.weipai.cn/201503/28/16/42481BC8-46B1-46E8-A7C8-5B263AF0DF53.m3u8";
 
 	private VideoView mVideoView;
 
@@ -96,6 +96,27 @@ public class VideoViewDemo extends Activity {
 	    mVideoView.setVideoPath(path);
 	};
 	
+	/**
+	 * 
+	 * 异步加载url并更新ui线程
+	 * @param path
+	 */
+	public void asyncHandle(final String strPath) {
+		
+		
+		new Thread(new Runnable(){	
+			
+			 public void run() {
+				 
+				String[] url = DNS.getCDNUrls(strPath);
+				Message msg = new Message();
+		        msg.obj = url[0];
+
+		        m_handler.sendMessage(msg); 				
+              				 
+			 }
+		}).start();	
+	}
 	
    
 	/**
@@ -106,20 +127,9 @@ public class VideoViewDemo extends Activity {
 		//如果设置了安卓的UI异步策略，可以直接获取URL
 		//String[] url = DNS.getCDNUrls(path2);
 	    //mVideoView.setVideoPath(url[0]);
-		
-		//如果采用异步的 网络请求，所以新线程处理
-		new Thread(new Runnable(){	
 			
-			 public void run() {
-				 
-				String[] url = DNS.getCDNUrls(path2);
-				Message msg = new Message();
-		        msg.obj = url[0];
-
-		        m_handler.sendMessage(msg); 				
-               				 
-			 }
-		}).start();	
-	  
+		//如果采用异步的 网络请求，所以新线程处理
+		asyncHandle(path2);
+		
 	}
 }
